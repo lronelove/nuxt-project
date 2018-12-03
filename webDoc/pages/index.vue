@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('@/assets/css/main.scss');
+@import url('@/assets/css/common/common.scss');
 $hello: green;
 
 .container {
@@ -51,7 +51,7 @@ $hello: green;
   font-weight: 300;
   font-size: 100px;
   // color: #35495e;
-  color: $hello;
+  color: $orange-color-5; // Hover
   letter-spacing: 1px;
 }
 
@@ -59,7 +59,6 @@ $hello: green;
   font-weight: 300;
   font-size: 42px;
   // color: #526488;
-  color: $red;
   word-spacing: 5px;
   padding-bottom: 15px;
 }

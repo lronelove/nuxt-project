@@ -1,0 +1,81 @@
+// 圆角大小
+$borderRadius: 5px;
+
+
+/***************************************************
+** 颜色配置
+***************************************************/
+// 边框颜色
+$borderColor: #e5e9f2;
+
+// 蓝色系
+$blue-color-1: #f0faff;
+$blue-color-2: #e8f7ff;
+$blue-color-3: #bfe6ff;
+$blue-color-4: #96d2ff;
+$blue-color-5: #6ebbff; // Hover
+$blue-color-6: #45a2ff; // Normal
+$blue-color-7: #307fd9; // Click
+$blue-color-8: #1e5fb3;
+$blue-color-9: #11428c;
+$blue-color-10: #0b2d66;
+
+// 绿色系
+$green-color-1: #f0fff4;
+$green-color-2: #c5fad6;
+$green-color-3: #95edb4;
+$green-color-4: #69e097;
+$green-color-5: #42d47e; // Hover
+$green-color-6: #1ec76a; // Normal
+$green-color-7: #10a156; // Click
+$green-color-8: #067a46;
+$green-color-9: #00542e;
+$green-color-10: #002e1b;
+
+// 红色系
+$red-color-1: #fff2f0;
+$red-color-2: #fff2f0;
+$red-color-3: #fff2f0;
+$red-color-4: #ffcbc7;
+$red-color-5: #ffa19e; // Hover
+$red-color-6: #fd7474; // Normal
+$red-color-7: #d6585c; // Click
+$red-color-8: #b03f47;
+$red-color-9: #8a2b34;
+$red-color-10: #631e27;
+
+// 橙色系
+$orange-color-1: #fffaf0;
+$orange-color-2: #fffaf0;
+$orange-color-3: #ffefd6;
+$orange-color-4: #ffddad;
+$orange-color-5: #ffc885; // Hover
+$orange-color-6: #ffb15d; // Normal
+$orange-color-7: #d98b43; // Click
+$orange-color-8: #b36a2e;
+$orange-color-9: #8c4c1d;
+$orange-color-10: #663414;
+
+// 灰色系
+$gray-color-1:  #ffffff;
+$gray-color-2:  #f2f2f2; // Table header
+$gray-color-3:  #e6e6e6; // Background
+$gray-color-4:  #d9d9d9; // Dividers
+$gray-color-5:  #cccccc; // Border
+$gray-color-6:  #bfbfbf; // Disable
+$gray-color-7:  #999999; // secondary text
+$gray-color-8:  #737373; // Primary text
+$gray-color-9:  #4d4d4d; // Title
+$gray-color-10: #262626;
+
+
+/***************************************************
+** 字体配置
+***************************************************/
+$fontSize-largeTitle:   24px; // 大标题
+$fontSize-primaryTitle: 20px; // 主标题
+$fontSize-title:        18px; // 标题
+$fontSize-smallTitle:   16px; // 标题
+$fontSize-text:         14px; // 正文
+// 辅助文本
+$fontSize-info:         12px;

@@ -29,7 +29,10 @@ module.exports = {
   css: [
     'element-ui/lib/theme-chalk/index.css',
      // 项目里要使用的 SCSS 文件
-     'assets/css/main.scss'
+     'assets/css/common/common.scss', // 基础样式
+     'assets/css/common/base.scss', // 基础样式
+     'assets/css/common/reset.scss', // 基础样式
+     'assets/css/common/var.scss' // 基础样式
   ],
 
   /*
@@ -50,7 +53,7 @@ module.exports = {
   */
   build: {
     styleResources: {
-      scss: './assets/css/main.scss'
+      scss: './assets/css/common/common.scss' 
     },
     /*
     ** You can extend webpack config here
