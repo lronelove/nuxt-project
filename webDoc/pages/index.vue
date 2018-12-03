@@ -32,7 +32,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import url('@/assets/css/main.scss');
+$hello: green;
 
 .container {
   min-height: 100vh;
@@ -48,14 +50,16 @@ export default {
   display: block;
   font-weight: 300;
   font-size: 100px;
-  color: #35495e;
+  // color: #35495e;
+  color: $hello;
   letter-spacing: 1px;
 }
 
 .subtitle {
   font-weight: 300;
   font-size: 42px;
-  color: #526488;
+  // color: #526488;
+  color: $red;
   word-spacing: 5px;
   padding-bottom: 15px;
 }
