@@ -19,6 +19,8 @@
           class="button--grey">GitHub</a>
       </div>
     </div>
+    <p>{{love.toString()}}</p>
+    <p v-for="(item, index) in list" :key="index">{{index}}hello</p>
   </section>
 </template>
 
@@ -31,6 +33,18 @@ export default {
   components: {
     Logo
   },
+  asyncData ({ params }) {
+    return homeApi.queryHomeNav().then(res => {
+      console.log(res)
+      return { love: res.data.data }
+    })
+  },
+  data () {
+    return {
+      list: [],
+      love: ''
+    }
+  },
   methods: {
     log(info) {
       console.log(homeApi)
@@ -40,6 +54,7 @@ export default {
     console.log(api)
     homeApi.queryHomeNav().then(res => {
       console.log(res)
+      this.list = res.data.data
     })
   }
 }
