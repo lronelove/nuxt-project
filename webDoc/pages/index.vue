@@ -24,10 +24,23 @@
 
 <script>
 import Logo from '~/components/Logo.vue'
+import api from './../service/index.js'
+const homeApi = api.home
 
 export default {
   components: {
     Logo
+  },
+  methods: {
+    log(info) {
+      console.log(homeApi)
+    }
+  },
+  created () {
+    console.log(api)
+    homeApi.queryHomeNav().then(res => {
+      console.log(res)
+    })
   }
 }
 </script>
