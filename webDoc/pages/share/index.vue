@@ -1,12 +1,11 @@
 <template>
   <div>
-    <h2>this is index page</h2>
-    <p v-for="(item, index) in list" :key="index">{{item}}</p>
+    <h2>this is share page</h2>
   </div>
 </template>
 
 <script>
-import api from './../service/index.js'
+import api from './../../service/index.js'
 const homeApi = api.home
 
 export default {
@@ -19,7 +18,7 @@ export default {
   },
   data () {
     return {
-      list: [1, 2, 3],
+      list: [],
       love: ''
     }
   },
