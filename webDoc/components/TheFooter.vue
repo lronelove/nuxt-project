@@ -8,10 +8,14 @@
 @import url('@/assets/css/common/common.scss');
 
 .footer {
-    line-height: 40px;
     background: #333;
     color: white;
     text-align: center;
+
+    p {
+      height: 40px;
+      line-height: 40px;
+    }
 }
 
 </style>

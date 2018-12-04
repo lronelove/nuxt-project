@@ -9,11 +9,7 @@
 
       <div class="right">
         <ul>
-          <li><a href="#">首页</a></li>
-          <li><a href="#">开发规范</a></li>
-          <li><a href="#">组件文档</a></li>
-          <li><a href="#">每周分享</a></li>
-          <li><a href="#">工具推荐</a></li>
+          <li v-for="(item, index) in list" :key="index"><a :href="item.url">{{item.name}}</a></li>
         </ul>
       </div>
     </div>
@@ -22,7 +18,33 @@
 
 <script>
   export default {
-    name: 'TheHead'
+    name: 'TheHead',
+    data () {
+      return {
+        list: [
+          {
+            url: '#',
+            name: '首页'
+          },
+          {
+            url: '#',
+            name: '开发规范'
+          },
+          {
+            url: '#',
+            name: '组件文档'
+          },
+          {
+            url: '#',
+            name: '每周分享'
+          },
+          {
+            url: '#',
+            name: '工具推荐'
+          },
+        ]
+      }
+    }
   }
 </script>
 
