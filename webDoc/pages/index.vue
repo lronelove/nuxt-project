@@ -11,7 +11,7 @@
           </div>
         </div>
         <div class="right">
-          <img src="./../static/home-banner.png" alt="home-banner">
+          <img src="../static/images/home-banner.png" alt="home-banner">
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
             <li><a href="#">加载优化</a></li>
             <li><a href="#">重构规范</a></li>
             <li><a href="#">页面加载优化</a></li>
-          </ul>   
+          </ul>
         </div>
 
         <div class="item">
@@ -46,7 +46,7 @@
             <li><a href="#">加载优化</a></li>
             <li><a href="#">重构规范</a></li>
             <li><a href="#">页面加载优化</a></li>
-          </ul>   
+          </ul>
         </div>
 
         <div class="item">
@@ -61,7 +61,7 @@
             <li><a href="#">加载优化</a></li>
             <li><a href="#">重构规范</a></li>
             <li><a href="#">页面加载优化</a></li>
-          </ul>   
+          </ul>
         </div>
 
         <div class="item">
@@ -76,7 +76,7 @@
             <li><a href="#">加载优化</a></li>
             <li><a href="#">重构规范</a></li>
             <li><a href="#">页面加载优化</a></li>
-          </ul>   
+          </ul>
         </div>
 
         <div class="item">
@@ -91,7 +91,7 @@
             <li><a href="#">加载优化</a></li>
             <li><a href="#">重构规范</a></li>
             <li><a href="#">页面加载优化</a></li>
-          </ul>   
+          </ul>
         </div>
 
         <div class="item">
@@ -106,7 +106,7 @@
             <li><a href="#">加载优化</a></li>
             <li><a href="#">重构规范</a></li>
             <li><a href="#">页面加载优化</a></li>
-          </ul>   
+          </ul>
         </div>
       </div>
     </div>
@@ -119,9 +119,7 @@ const homeApi = api.home
 
 export default {
   asyncData ({ params }) {
-    console.log(params)
     return homeApi.queryHomeNav().then(res => {
-      console.log(res)
       return { list: params }
     })
   },
@@ -177,7 +175,7 @@ export default {
     }
 
     p {
-      color: #707070; 
+      color: #707070;
       font-size: 12px;
       line-height: 18px;
       margin-bottom: 20px;

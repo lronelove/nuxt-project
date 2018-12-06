@@ -3,7 +3,7 @@
     <div class="head container">
       <div class="left">
         <a href="#">
-          <img src="./../static/logo.png" alt="">
+          <img src="./../static/images/logo.png" alt="">
         </a>
       </div>
 
