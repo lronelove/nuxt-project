@@ -162,6 +162,14 @@ export default {
     overflow: hidden;
     margin-bottom: 30px;
     margin-left: 40px;
+    transition: all .3s;
+    border-radius: $borderRadius;
+
+    &:hover {
+      cursor: pointer;
+      box-shadow: 6px 6px 4px rgba(0, 0, 0, .1), -6px -6px 4px rgba(0, 0, 0, .1);
+      transform: translateX(-2px);
+    }
 
     h3 {
       font-size: 20px;
