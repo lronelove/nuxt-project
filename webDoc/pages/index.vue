@@ -7,7 +7,7 @@
           <h1>SEGE 四格互联文档库</h1>
           <p>是SEGI团队面向内部前端研发小伙伴提供的一个开发规范平台，包含了开发规范、公司内部组件文档、每周分享、开发工具推荐等</p>
           <div class="button">
-            <a href="#">快速开始</a>
+            <nuxt-link to="/doc">快速开始</nuxt-link>
           </div>
         </div>
         <div class="right">
@@ -19,93 +19,13 @@
     <!-- 推荐分类模块 -->
     <div class="rec-wrap">
       <div class="rec container clearFix">
-        <div class="item">
-          <h3>开发规范</h3>
-          <p>主要包括五部分内容：PC规范、移动端规范、性能优化、等。</p>
+        <div class="item" v-for="(item, index) in list" :key="index">
+          <h3>{{item.name}}</h3>
+          <p>{{item.desc}}</p>
           <ul>
-            <li><a href="#">html规范</a></li>
-            <li><a href="#">css规范</a></li>
-            <li><a href="#">js规范</a></li>
-            <li><a href="#">动画优化</a></li>
-            <li><a href="#">接口规范</a></li>
-            <li><a href="#">加载优化</a></li>
-            <li><a href="#">重构规范</a></li>
-            <li><a href="#">页面加载优化</a></li>
-          </ul>
-        </div>
-
-        <div class="item">
-          <h3>开发规范</h3>
-          <p class="wordHidden twoline">主要包括五部分内容：PC规范、移动端规范、性能优化、等。</p>
-          <ul>
-            <li><a href="#">html规范</a></li>
-            <li><a href="#">css规范</a></li>
-            <li><a href="#">js规范</a></li>
-            <li><a href="#">动画优化</a></li>
-            <li><a href="#">接口规范</a></li>
-            <li><a href="#">加载优化</a></li>
-            <li><a href="#">重构规范</a></li>
-            <li><a href="#">页面加载优化</a></li>
-          </ul>
-        </div>
-
-        <div class="item">
-          <h3>开发规范</h3>
-          <p class="wordHidden twoline">主要包括五部分内容：PC规范、移动端规范、性能优化、等。</p>
-          <ul>
-            <li><a href="#">html规范</a></li>
-            <li><a href="#">css规范</a></li>
-            <li><a href="#">js规范</a></li>
-            <li><a href="#">动画优化</a></li>
-            <li><a href="#">接口规范</a></li>
-            <li><a href="#">加载优化</a></li>
-            <li><a href="#">重构规范</a></li>
-            <li><a href="#">页面加载优化</a></li>
-          </ul>
-        </div>
-
-        <div class="item">
-          <h3>开发规范</h3>
-          <p class="wordHidden twoline">主要包括五部分内容：PC规范、移动端规范、性能优化、等。</p>
-          <ul>
-            <li><a href="#">html规范</a></li>
-            <li><a href="#">css规范</a></li>
-            <li><a href="#">js规范</a></li>
-            <li><a href="#">动画优化</a></li>
-            <li><a href="#">接口规范</a></li>
-            <li><a href="#">加载优化</a></li>
-            <li><a href="#">重构规范</a></li>
-            <li><a href="#">页面加载优化</a></li>
-          </ul>
-        </div>
-
-        <div class="item">
-          <h3>开发规范</h3>
-          <p class="wordHidden twoline">主要包括五部分内容：PC规范、移动端规范、性能优化、等。</p>
-          <ul>
-            <li><a href="#">html规范</a></li>
-            <li><a href="#">css规范</a></li>
-            <li><a href="#">js规范</a></li>
-            <li><a href="#">动画优化</a></li>
-            <li><a href="#">接口规范</a></li>
-            <li><a href="#">加载优化</a></li>
-            <li><a href="#">重构规范</a></li>
-            <li><a href="#">页面加载优化</a></li>
-          </ul>
-        </div>
-
-        <div class="item">
-          <h3>开发规范</h3>
-          <p class="wordHidden twoline">主要包括五部分内容：PC规范、移动端规范、性能优化、等。</p>
-          <ul>
-            <li><a href="#">html规范</a></li>
-            <li><a href="#">css规范</a></li>
-            <li><a href="#">js规范</a></li>
-            <li><a href="#">动画优化</a></li>
-            <li><a href="#">接口规范</a></li>
-            <li><a href="#">加载优化</a></li>
-            <li><a href="#">重构规范</a></li>
-            <li><a href="#">页面加载优化</a></li>
+            <li v-for="(child, childIndex) in item.children" :key="childIndex">
+              <a :href="child.url">{{child.name}}</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -118,28 +38,31 @@ import api from './../service/index.js'
 const homeApi = api.home
 
 export default {
-  asyncData ({ params }) {
-    return homeApi.queryHomeNav().then(res => {
-      return { list: params }
-    })
-  },
   data () {
     return {
-      list: [1, 2, 3],
-      love: ''
+      list: [] // 首页推荐分类接口数据
     }
   },
+
   methods: {
-    log(info) {
-      console.log(homeApi)
+    // 初始化函数
+    init () {
+      this.queryHomeRecommend() // 查询首页推荐分类
+    },
+
+    // 查询首页推荐分类
+    queryHomeRecommend () {
+      homeApi.queryHomeRecommend().then(res => {
+        console.log(res.data.data)
+        if (res.data.code === 0) {
+          this.list = res.data.data
+        }
+      })
     }
   },
+
   created () {
-    console.log(api)
-    homeApi.queryHomeNav().then(res => {
-      // console.log(res)
-      // this.list = res.data.data
-    })
+    this.init()
   }
 }
 </script>

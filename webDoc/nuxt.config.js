@@ -31,8 +31,8 @@ module.exports = {
      // 项目里要使用的 SCSS 文件
      'assets/css/common/common.scss', // 基础样式
      'assets/css/common/base.scss', // 基础样式
-     'assets/css/common/reset.scss', // 基础样式
-     'assets/css/common/var.scss' // 基础样式
+     'assets/css/common/reset.scss', // 重置样式
+     'assets/css/common/var.scss' // 变量样式
   ],
 
   /*

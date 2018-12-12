@@ -2,14 +2,14 @@
   <div class="head-wrap">
     <div class="head container">
       <div class="left">
-        <a href="#">
+        <nuxt-link to="/">
           <img src="./../static/images/logo.png" alt="">
-        </a>
+        </nuxt-link>
       </div>
 
       <div class="right">
         <ul>
-          <li v-for="(item, index) in list" :key="index"><a :href="item.url">{{item.name}}</a></li>
+          <li v-for="(item, index) in list" :key="index"><nuxt-link :to="item.url">{{item.navName}}</nuxt-link></li>
         </ul>
       </div>
     </div>
@@ -17,32 +17,35 @@
 </template>
 
 <script>
+  import api from './../service/index.js'
+  const homeApi = api.home
+
   export default {
     name: 'TheHead',
+
     data () {
       return {
-        list: [
-          {
-            url: '#',
-            name: '首页'
-          },
-          {
-            url: '#',
-            name: '开发规范'
-          },
-          {
-            url: '#',
-            name: '组件文档'
-          },
-          {
-            url: '#',
-            name: '每周分享'
-          },
-          {
-            url: '#',
-            name: '工具推荐'
-          },
-        ]
+        list: [] // 导航列表数据
+      }
+    },
+
+    created () {
+      this.init() // 初始化函数
+    },
+
+    methods: {
+      // 初始化函数
+      init () {
+        this.queryHomeNav() // 获取导航列表数据
+      },
+
+      // 获取导航模块数据
+      queryHomeNav () {
+        homeApi.queryHomeNav().then(res => {
+          if (res.data.code === 0) {
+            this.list = res.data.data
+          }
+        })
       }
     }
   }
@@ -88,7 +91,7 @@
           font-size: $fontSize-title;
 
           &:hover {
-            color: $orange-color-5;
+            color: $blue-color-5;
           }
         }
       }

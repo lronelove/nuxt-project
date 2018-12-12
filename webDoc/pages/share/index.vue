@@ -1,66 +1,152 @@
 <template>
-  <div>
-    <h2>this is share page</h2>
+  <div class="share-wrap">
+    <div class="share container">
+      <h1>每周分享</h1>
+      <p class="total">已累计22次技术分享，以下的分享的文档纪录</p>
+
+      <div class="content">
+          <div v-for="(item, index) in list" :key="index" class="item">
+            <h2>{{item.title}}</h2>
+            <ul>
+              <li v-for="(article, articleIndex) in item.articles" :key="articleIndex">
+                <h3>{{article.title}}</h3>
+                <p class="desc wordHidden twoline">{{article.content}}</p>
+                <p class="name">分享人： {{article.username}}</p>
+              </li>
+            </ul>
+          </div>
+      </div>      
+    </div>
+
+    <div class="pr pagination-wrap">
+      <el-pagination
+              class="pagination"
+              background
+              :page-count="pagination.pageCount"
+              :current-page="pagination.currentPage"
+              layout="prev, pager, next"
+              @current-change="queryArticleList"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
 import api from './../../service/index.js'
-const homeApi = api.home
+const docApi = api.doc
 
 export default {
-  asyncData ({ params }) {
-    console.log(params)
-    return homeApi.queryHomeNav().then(res => {
-      console.log(res)
-      return { list: params }
-    })
-  },
   data () {
     return {
-      list: [],
-      love: ''
+      list: [], // 分享列表数据
+      pagination: { // 分页器相关配置
+        currentPage: 1, // 当前页
+        pageCount: 10, // 总页数
+        pagerCount: 6 // 分页器总数         
+      }
     }
   },
   methods: {
-    log(info) {
-      console.log(homeApi)
+    // 初始化函数
+    init() {
+      this.querySharings(1)
+    },
+
+    // 查询每周分享的数据
+    querySharings (pageNo, pageLength = 3) {
+      docApi.share(pageNo, pageLength).then(res => {
+        let data = res.data.data
+        this.list = data.shareList
+        this.pagination.pageCount = Math.ceil(data.totolCount / pageLength)
+      })
+    },
+
+    // 搜索文章列表
+    queryArticleList (currentPage) {
+      console.log(currentPage)
+      this.querySharings(currentPage)
     }
   },
   created () {
-    console.log(api)
-    homeApi.queryHomeNav().then(res => {
-      // console.log(res)
-      // this.list = res.data.data
-    })
+    this.init()    
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import url('@/assets/css/common/common.scss');
-$hello: green;
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  // color: #35495e;
-  color: $orange-color-5; // Hover
-  letter-spacing: 1px;
+/*! 具体内容模块*/
+.pagination-wrap {
+  height: 40px;
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  // color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+.pagination {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.links {
-  padding-top: 15px;
+.content {
+  margin-top: 100px;
+
+  .item {
+    margin-bottom: 140px;
+    cursor: pointer;  
+
+    h2 {
+      color: $orange-color-6;
+      font-size: 38px;
+      font-weight: normal;
+      text-align: center;
+    }
+
+    ul {
+      li {
+        border-bottom: 1px dashed $gray-color-5;
+        padding-top: 50px;
+        padding-bottom: 30px;
+
+        h3 {
+          font-size: 30px;
+          font-weight: normal;
+          margin-bottom: 40px;
+        }
+
+        p {
+          color: #333;
+        }
+
+        p.desc {
+          line-height: 22px;
+          font-size: 14px;
+          height: 44px;
+        }
+
+        p.name {
+          margin-top: 30px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+/*! 头部模块*/
+.share {
+  padding-top: 70px;
+
+  h1 {
+    text-align: center;
+    font-size: 52px;
+    font-weight: normal;
+  }
+
+  .total {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 20px;
+  }
 }
 </style>
