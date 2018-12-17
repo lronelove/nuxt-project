@@ -2,17 +2,22 @@
   <div class="share-wrap">
     <div class="share container">
       <h1>每周分享</h1>
-      <p class="total">已累计22次技术分享，以下的分享的文档纪录</p>
+      <p class="total">已累计{{total}}次技术分享，以下的分享的文档纪录</p>
 
       <div class="content">
           <div v-for="(item, index) in list" :key="index" class="item">
             <h2>{{item.title}}</h2>
             <ul>
-              <li v-for="(article, articleIndex) in item.articles" :key="articleIndex">
+              <nuxt-link
+                tag="li" 
+                v-for="(article, articleIndex) in item.articles" 
+                :key="articleIndex"
+                :to="{ path: '/doc', query: { category_id: article.category_id, article_id: article.id } }"
+              >
                 <h3>{{article.title}}</h3>
                 <p class="desc wordHidden twoline">{{article.content}}</p>
                 <p class="name">分享人： {{article.username}}</p>
-              </li>
+              </nuxt-link>
             </ul>
           </div>
       </div>      
@@ -43,8 +48,9 @@ export default {
       pagination: { // 分页器相关配置
         currentPage: 1, // 当前页
         pageCount: 10, // 总页数
-        pagerCount: 6 // 分页器总数         
-      }
+        pagerCount: 4 // 分页器总数         
+      },
+      total: 0 // 分享的次数
     }
   },
   methods: {
@@ -54,17 +60,17 @@ export default {
     },
 
     // 查询每周分享的数据
-    querySharings (pageNo, pageLength = 3) {
-      docApi.share(pageNo, pageLength).then(res => {
+    querySharings (pageNum, pageSize = 3) {
+      docApi.share(pageNum, pageSize).then(res => {
         let data = res.data.data
         this.list = data.shareList
-        this.pagination.pageCount = Math.ceil(data.totolCount / pageLength)
+        this.pagination.pageCount = Math.ceil(data.totalCount / pageSize)
+        this.total = data.totalCount
       })
     },
 
     // 搜索文章列表
     queryArticleList (currentPage) {
-      console.log(currentPage)
       this.querySharings(currentPage)
     }
   },

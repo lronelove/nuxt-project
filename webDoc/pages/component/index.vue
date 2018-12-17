@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>this is componnet page</h2>
+    <iframe class="iframe" src="http://www.baidu.com" frameborder="0"></iframe>
   </div>
 </template>
 
@@ -39,28 +39,9 @@ export default {
 
 <style lang="scss">
 @import url('@/assets/css/common/common.scss');
-$hello: green;
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  // color: #35495e;
-  color: $orange-color-5; // Hover
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  // color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+.iframe {
+  width: 100%;
+  min-height: 823px
 }
 </style>

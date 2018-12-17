@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- banner图模块   -->
-    <div class="banner-wrap">
+    <nuxt-link tag="div" to="/doc" class="banner-wrap">
       <div class="banner container">
         <div class="left">
           <h1>SEGE 四格互联文档库</h1>
@@ -14,20 +14,34 @@
           <img src="../static/images/home-banner.png" alt="home-banner">
         </div>
       </div>
-    </div>
+    </nuxt-link>
 
     <!-- 推荐分类模块 -->
     <div class="rec-wrap">
       <div class="rec container clearFix">
-        <div class="item" v-for="(item, index) in list" :key="index">
+        <nuxt-link 
+          tag="div" 
+          class="item" 
+          v-for="(item, index) in list" 
+          :key="index"
+          :to="{ path: '/doc', query: { cateroty_id: item.id } }"
+        >
           <h3>{{item.name}}</h3>
           <p>{{item.desc}}</p>
           <ul>
             <li v-for="(child, childIndex) in item.children" :key="childIndex">
-              <a :href="child.url">{{child.name}}</a>
+              <nuxt-link :to="{ 
+                path: '/doc',
+                query: { 
+                  cateroty_id: item.id,  
+                  article_id: child.id
+                } 
+              }">
+                {{child.name}}
+              </nuxt-link>
             </li>
           </ul>
-        </div>
+        </nuxt-link>
       </div>
     </div>
   </div>
@@ -38,6 +52,7 @@ import api from './../service/index.js'
 const homeApi = api.home
 
 export default {
+  
   data () {
     return {
       list: [] // 首页推荐分类接口数据

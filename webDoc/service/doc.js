@@ -8,7 +8,22 @@ const docApi = api.doc
 
 export default {
   // 每周分享接口
-  share (pageNo, pageLength) {
-    return axios.get(docApi.share + '?pageNo=' + pageNo + '&pageLength=' + pageLength)
-  }
+  share (pageNum, pageSize) {
+    return axios.get(docApi.share + '?pageNum=' + pageNum + '&pageSize=' + pageSize)
+  },
+
+  // 获取文章的分类
+  getCategory () {
+    return axios.post(docApi.getCategory)
+  },
+
+  // 获取文章列表
+  getArticleList (params) {
+    return axios.post(docApi.getArticleList, params)
+  },
+
+  // 获取文章详情
+  getArticle (params) {
+    return axios.post(docApi.getArticle, params)
+  }, 
 }
