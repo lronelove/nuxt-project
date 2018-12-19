@@ -63,6 +63,11 @@ export default {
     // 初始化函数
     init () {
       this.queryHomeRecommend() // 查询首页推荐分类
+      this.$message({
+        message: '欢迎访问四格互联文档库',
+        type: 'success',
+        duration: 2000
+      });
     },
 
     // 查询首页推荐分类

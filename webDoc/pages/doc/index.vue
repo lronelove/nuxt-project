@@ -50,7 +50,7 @@
         <!-- 详细文章内容及其评论模块 -->
         <div class="right">
           <h2>{{articleDetails.title}}</h2>
-          <p>{{articleDetails.author}} 发布于1小时前</p>
+          <p>{{articleDetails.author}} 发布于{{articleDetails.showTime}}</p>
 
           <!-- 下面是文章的具体内容 -->
           <div class="content">
@@ -132,6 +132,7 @@ const docApi = api.doc
 export default {
   data () {
     return {
+      isInit: true, // 是否是初始化
       articleDetails: {
       }, // 文章详情
       activeNavIndex: -1, // 当前选中的分类下标
@@ -243,17 +244,25 @@ export default {
     // 渲染文章列表
     renderArticleList ( params ) {
       docApi.getArticleList(params).then(res => {
-        const data = res.data.data
-        this.recommendArticles = data.resultList
-        const { totalCount, pageLength } = data.paginator
-        this.pagination.pageCount = Math.ceil( totalCount / pageLength )
-        let id = this.recommendArticles[0].id // 如果query没有文章id，那么默认选中第一条
+        if (res.data.code !== 0) {
+          this.$message({
+            message: res.data.msg,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          const data = res.data.data
+          this.recommendArticles = data.resultList
+          const { totalCount, pageLength } = data.paginator
+          this.pagination.pageCount = Math.ceil( totalCount / pageLength )
+          let id = this.recommendArticles[0].id // 如果query没有文章id，那么默认选中第一条
 
-        if ( this.query.article_id ) {
-          id = this.query.article_id
-          this.activeArticleIndex = this.getIndexById(id)
+          if ( this.query.article_id && this.isInit) {
+            id = this.query.article_id
+            this.activeArticleIndex = this.getIndexById(id)
+          }
+          this.getArticle(id) // 默认获取第一篇文章
         }
-        this.getArticle(id) // 默认获取第一篇文章
       })
     },
     
@@ -271,7 +280,6 @@ export default {
       const query = this.$route.query
       this.query.category_id = query.category_id
       this.query.article_id = query.article_id
-
       this.activeNavIndex = this.query.category_id || -1 // 初始化的时候设置当前主分类
     },
 
@@ -289,6 +297,7 @@ export default {
       this.getQuery() // 初始化获取query里面的参数 
       this.getCategory() // 获取文章分类
       this.getArticleList() // 获取文章列表
+      this.isInit = false // 初始化完成了 
     }
   },
 
