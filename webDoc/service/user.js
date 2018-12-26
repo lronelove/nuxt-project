@@ -15,5 +15,10 @@ export default {
   // 登出
   logout () {
     return axios.post(userApi.logout)
+  },
+
+  // 获取用户部分信息
+  queryLimitedInfo (userId) {
+    return axios.post(userApi.queryLimitedInfo, { userId })
   }
 }

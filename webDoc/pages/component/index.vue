@@ -9,13 +9,6 @@ import api from './../../service/index.js'
 const homeApi = api.home
 
 export default {
-  asyncData ({ params }) {
-    console.log(params)
-    return homeApi.queryHomeNav().then(res => {
-      console.log(res)
-      return { list: params }
-    })
-  },
   data () {
     return {
       list: [],
@@ -24,15 +17,9 @@ export default {
   },
   methods: {
     log(info) {
-      console.log(homeApi)
     }
   },
   created () {
-    console.log(api)
-    homeApi.queryHomeNav().then(res => {
-      // console.log(res)
-      // this.list = res.data.data
-    })
   }
 }
 </script>

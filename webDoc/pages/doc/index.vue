@@ -63,7 +63,7 @@
 
             <!-- 顶部输入模块 -->
             <div class="type-reply">
-              <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=216962673,424699934&fm=200&gp=0.jpg" alt="头像">
+              <img :src="avatarImage" alt="头像">
               <el-input
                 class="top-input"
                 type="textarea"
@@ -79,42 +79,50 @@
 
             <!-- 回复列表模块 -->
             <div class="reply-list">
-              <div class="reply-item">
+              <div v-for="(item, index) in replyList" :key="index" class="reply-item">
                 <div class="item-left">
-                  <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=735113195,958349734&fm=200&gp=0.jpg" alt="">
+                  <img :src="item.user_info.avatar_image" alt="">
                 </div>
                 <div class="item-right">
-                  <p class="name">大东</p>
-                  <p class="item-content">有报错，怎么解决？</p>
-                  <ReplyControlls></ReplyControlls>  
+                  <p class="name" @click="chooseReplyPerson(item.user_info.user_id)">{{item.user_info.username}}</p>
+                  <p class="item-content">{{item.content}}</p>
+                  <ReplyControlls
+                    :isActive="item.isActive"
+                    :likeNum="item.likeNum"
+                    :replyToId="item.user_info.user_id"  
+                    :time="item.create_time"
+                    :replyId="item.id"
+                    :id="item.id"   
+                    v-on:replyAgain="replyAgain"
+                    >
+                  </ReplyControlls>  
 
                   <!-- 二次回复列表模块 -->
                   <div class="reply-again-list">
-                    <div class="reply-again">
+                    <div v-for="(innerItem, innerIndex) in item.list" :key="innerIndex" class="reply-again" >
                      <div class="reply-to">
-                       <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=735113195,958349734&fm=200&gp=0.jpg" alt="">
-                       <span class="to-name">大佬</span>
+                       <img :src="innerItem.user_info.avatar_image" alt="">
+                       <span class="to-name">{{innerItem.user_info.username}}</span>
                        <span>回复</span>
-                       <span class="to-name">lronelove</span>
+                       <span class="to-name">{{innerItem.resp_info.username}}</span>
                        <span>:</span>
                      </div>
-                     <p>其实吧，我也不知道，问百度比较好</p>
-                     <ReplyControlls></ReplyControlls> 
+                     <p>{{innerItem.content}}</p>
+                     <ReplyControlls
+                      :isActive="innerItem.isActive"
+                      :likeNum="innerItem.likeNum"
+                      :replyToId="innerItem.user_info.user_id" 
+                      :time="innerItem.create_time"
+                      :replyId="item.id"
+                      :id="innerItem.id"  
+                      v-on:replyAgain="replyAgain"
+                     >
+                     </ReplyControlls> 
                     </div>
                   </div>
 
                 </div>
-              </div>
-
-              <div class="reply-item">
-                <div class="item-left">
-                  <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=735113195,958349734&fm=200&gp=0.jpg" alt="">
-                </div>
-                <div class="item-right">
-                  <p class="name">大东</p>
-                  <p class="item-content">有报错，怎么解决？</p>
-                </div>
-              </div>
+              </div> 
             </div>
           </div>
         </div>
@@ -126,19 +134,24 @@
 <script>
 import ReplyControlls from '@/components/ReplyControlls.vue'
 
+import jsCookie from 'js-cookie'
 import api from './../../service/index.js'
+
 const docApi = api.doc
+const userApi = api.user
+let query = {}
 
 export default {
   data () {
     return {
+      replyList: [], // 回复列表
       isInit: true, // 是否是初始化
       articleDetails: {
       }, // 文章详情
       activeNavIndex: -1, // 当前选中的分类下标
       navList: [
       ], // 导航列表
-      reply: '', // 回复的内容
+      reply: '', // 一级回复的内容
       searchValue: '', // 搜索框的内容
       recommendArticles: [], // 文章列表
       activeArticleIndex: 0, // 当前选中的文章下标
@@ -153,13 +166,104 @@ export default {
       }
     }
   },
+
   components: {
     ReplyControlls
   },
+
+  beforeRouteLeave (to, from, next) {
+    next()
+  },
+
   methods: {
+    // 回复评论
+    replyAgain (data) {
+      const article_id = this.recommendArticles[this.activeArticleIndex].id // 当前文章的id
+      const reply_from_id = jsCookie.get('userId') // userId 评论者id
+      const reply_id = data.replyId // 一级评论的id
+      const content = data.content // 一级评论的内容
+      const reply_to_id = data.replyToId
+      const isValidate = this.validateTypeArticleReply(article_id, reply_from_id, content) // 是否满足验证
+
+      if ( !isValidate ) return false
+      docApi.typeArticleReply({ 
+        article_id,
+        reply_from_id,
+        reply_id,
+        content,
+        reply_to_id
+      }).then(res => {
+        if (res.data.code === 0) {
+          this.$message({
+            message: res.data.msg,
+            type: 'success'
+          })
+          this.getReplyList(article_id) // 刷新评论列表
+        } else {
+          this.$message({
+            message: res.data.msg,
+            type: 'warning'
+          })
+        }
+      })
+    },
+
+    // 编写文章的评论的验证
+    validateTypeArticleReply (article_id, reply_from_id, content) {
+      if ( !article_id ) { // 评论文章不存在
+        this.$message({
+          message: '评论的文章不存在',
+          type: 'warning'
+        })
+
+        return false
+      }
+
+      if ( !reply_from_id ) { // 未登录
+        this.$message({
+          message: '登录之后才可以评论',
+          type: 'warning'
+        })
+
+        return false
+      }
+
+      if ( !content ) {
+        this.$message({
+          message: '评论内容不能为空',
+          type: 'warning'
+        })
+
+        return false
+      }
+
+      return true
+    },
+
     // 编写文章的评论
     typeArticleReply () {
-      console.log(this.reply)
+      const article_id = this.recommendArticles[this.activeArticleIndex].id // 当前文章的id
+      const reply_from_id = jsCookie.get('userId')
+      const content = this.reply
+
+      const isValidate = this.validateTypeArticleReply(article_id, reply_from_id, content) // 是否满足验证
+
+      if ( !isValidate ) return false
+      docApi.typeArticleReply({ article_id, reply_from_id, content }).then(res => {
+        if (res.data.code === 0) {
+          this.$message({
+            message: res.data.msg,
+            type: 'success'
+          })
+          this.reply = '' // 清空回复
+          this.getReplyList(article_id) // 刷新评论列表
+        } else {
+          this.$message({
+            message: res.data.msg,
+            type: 'warning'
+          })
+        }
+      })
     },
 
     // 重置
@@ -169,13 +273,13 @@ export default {
     },
 
     // 点击推荐文章列表，切换内容
-    changeArticle (id, index) {
+    changeArticle ( id, index ) {
       this.activeArticleIndex = index // 切换列表激活样式
       this.getArticle(id) // 获取文章详情
     },
 
     // 切换分类
-    changeCategory (id, index) {
+    changeCategory ( id, index ) {
       const params = {
         categoryId: id
       }
@@ -184,7 +288,7 @@ export default {
     },
 
     // 查询推荐文章
-    querySearch (queryString, cb) {
+    querySearch ( queryString, cb ) {
       const params = {
         queryTitle: queryString
       }
@@ -207,14 +311,14 @@ export default {
     },
 
     // 选中搜索框推荐文章
-    handleSelect (item) {
-      console.log(item)
+    handleSelect ( item ) {
       this.recommendArticles = [item] // 推荐文章列表只有一个
       this.reset() // 重置
+      this.getArticle(item.id)
     },
 
     // 点击分页器 搜索文章列表
-    queryArticleList (currentPage) {
+    queryArticleList ( currentPage ) {
       const category_id = this.query.category_id || null
       const params = {
         categoryId: category_id,
@@ -257,11 +361,11 @@ export default {
           this.pagination.pageCount = Math.ceil( totalCount / pageLength )
           let id = this.recommendArticles[0].id // 如果query没有文章id，那么默认选中第一条
 
-          if ( this.query.article_id && this.isInit) {
+          if ( this.query.article_id && this.isInit ) { // 如果初始化的时候query里面有article_id
             id = this.query.article_id
             this.activeArticleIndex = this.getIndexById(id)
           }
-          this.getArticle(id) // 默认获取第一篇文章
+          if ( id ) this.getArticle(id) // 默认获取第一篇文章
         }
       })
     },
@@ -277,32 +381,59 @@ export default {
 
     // 初始化获取query里面的参数
     getQuery () {
-      const query = this.$route.query
       this.query.category_id = query.category_id
       this.query.article_id = query.article_id
+      console.log('this query')
+      console.log(query)
       this.activeNavIndex = this.query.category_id || -1 // 初始化的时候设置当前主分类
     },
 
     // 获取文章详情 
-    getArticle (articleId) {
+    getArticle ( articleId ) {
       docApi.getArticle({ articleId }).then(res => {
         if (res.data.code === 0) {
-          this.articleDetails = res.data.data
+          this.articleDetails = res.data.data // 获取文章详情
+          this.getReplyList(res.data.data.id) // 获取回复列表
+        }
+      })
+    },
+
+    // 获取评论的列表函数 lronelove
+    getReplyList ( article_id ) {
+      const user_id = jsCookie.get('userId')
+      docApi.getReplyList(article_id, user_id).then(res => {
+        if (res.data.code === 0) {
+          this.replyList = res.data.data.list.reverse()
         }
       })
     },
 
     // 初始化函数
     init () {
-      this.getQuery() // 初始化获取query里面的参数 
+      console.log('created')
       this.getCategory() // 获取文章分类
+      this.getQuery() // 初始化获取query里面的参数 
       this.getArticleList() // 获取文章列表
       this.isInit = false // 初始化完成了 
     }
   },
 
+  asyncData({ route }) {
+    query = route.query
+    console.log('asyncData')
+    console.log(query)
+    return {}
+  },
+
   created () {
     this.init()
+  },
+
+  computed: {
+    // 头像，在store里面获取，没有的话，那么使用默认头像
+    avatarImage () {
+      return this.$store.state.avatarImage || require('../../static/images/default_avatar.jpg')
+    }
   }
 }
 </script>
@@ -327,6 +458,11 @@ $imageWidth: 44px;
       padding-right: 10px;
       color: #333;
       font-size: 16px;
+
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
     } 
   }
 
@@ -360,6 +496,11 @@ $imageWidth: 44px;
     .name {
       font-size: 18px;
       line-height: 22px;
+
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
     }
 
     .item-content {

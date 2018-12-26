@@ -15,7 +15,7 @@
           <li>
             <a v-show="!isLogined" class="login" @click="dialogFormVisible = true"><span>登录</span></a>
             <a v-show="isLogined" class="login">
-              <img src="https://upload.jianshu.io/users/upload_avatars/12450213/47c4e4e9-a15c-4163-878a-79662ff487ce?imageMogr2/auto-orient/strip|imageView2/1/w/120/h/120" alt="">
+              <img :src="avatarImage" alt="">
               <span @click="logout">退出</span>
             </a>
           </li>
@@ -29,7 +29,7 @@
             <el-input v-model="form.username" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码：" :label-width="formLabelWidth">
-            <el-input v-model="form.password" autocomplete="off"></el-input>
+            <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -58,6 +58,7 @@
 
     data () {
       return {
+        avatarImage: require('./../static/images/default_avatar.jpg'), // 头像
         isLogined: false, // 是否登录
         list: [], // 导航列表数据
         dialogFormVisible: false,
@@ -123,7 +124,8 @@
       handleLogin (data) {
         this.dialogFormVisible = false
         this.isLogined = true // 登录成功
-        
+        this.queryLimitedInfo(data.userId) // 查询用户部分信息
+
         jsCookie.set('token', data.token, { expires: 7 }) // 存储token
         jsCookie.set('userId', data.userId, { expires: 7 }) // 存储userId
         
@@ -143,6 +145,11 @@
           if (res.data.code === 0) {
             const data = res.data.data
             this.handleLogin(data)
+          } else {
+            this.$message({
+              message: res.data.msg,
+              type: 'warning'
+            })
           }
         })
       },
@@ -154,12 +161,24 @@
 
         if (userId && token) { // 同时存在
           this.isLogined = true
+          this.queryLimitedInfo() // 查询用户相关信息
         }
       },
 
       // 查询用户的相关信息
-      queryUserInfo () {
+      queryLimitedInfo (id) {
+        let userId = id || jsCookie.get('userId')
+        userApi.queryLimitedInfo(userId).then(res => {
+          if (res.data.code === 0) {
+            this.handleUserInfo(res.data.data)
+          }
+        })
+      },
 
+      // 处理用户相关信息
+      handleUserInfo (data) {
+        this.$store.commit('setAvatarImage', data.avatarImage) // 存储头像
+        this.avatarImage = data.avatarImage
       },
 
       // 初始化函数

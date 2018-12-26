@@ -24,7 +24,7 @@
           class="item" 
           v-for="(item, index) in list" 
           :key="index"
-          :to="{ path: '/doc', query: { cateroty_id: item.id } }"
+          :to="{ path: '/doc', query: { category_id: item.id } }"
         >
           <h3>{{item.name}}</h3>
           <p>{{item.desc}}</p>
@@ -33,7 +33,7 @@
               <nuxt-link :to="{ 
                 path: '/doc',
                 query: { 
-                  cateroty_id: item.id,  
+                  category_id: item.id,  
                   article_id: child.id
                 } 
               }">
@@ -60,20 +60,30 @@ export default {
   },
 
   methods: {
+    // 第一次进入文档库say hello
+    sayHello () {
+      const isFirstVisit = this.$store.state.isFirstVisit
+      if ( isFirstVisit ) {
+        this.$message({
+          message: '欢迎访问四格互联文档库',
+          type: 'success',
+          duration: 2000
+        })
+        setTimeout(() => {
+          this.$store.commit('setIsFirstVisit', false) // 不是第一次访问了          
+        }, 0)
+      } 
+    },
+
     // 初始化函数
     init () {
+      this.sayHello() // say hello      
       this.queryHomeRecommend() // 查询首页推荐分类
-      this.$message({
-        message: '欢迎访问四格互联文档库',
-        type: 'success',
-        duration: 2000
-      });
     },
 
     // 查询首页推荐分类
     queryHomeRecommend () {
       homeApi.queryHomeRecommend().then(res => {
-        console.log(res.data.data)
         if (res.data.code === 0) {
           this.list = res.data.data
         }
